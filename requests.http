@@ -1,0 +1,34 @@
+### Health Check - Full Health Status
+GET http://localhost:3147/health
+
+### Health Check - Liveness Probe
+GET http://localhost:3147/health/liveness
+
+### Health Check - Readiness Probe
+GET http://localhost:3147/health/readiness
+
+### Send Message to Queue
+POST http://localhost:3147/messages/send
+Content-Type: application/json
+
+{
+  "queue": "test-queue",
+  "message": {
+    "text": "Hello RabbitMQ!111",
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+}
+
+### Publish to Exchange
+POST http://localhost:3147/messages/publish
+Content-Type: application/json
+
+{
+  "exchange": "notifications",
+  "routingKey": "user.created",
+  "message": {
+    "userId": 124563,
+    "email": "user567@example.com"
+  },
+  "exchangeType": "topic"
+}
