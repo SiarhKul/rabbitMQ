@@ -10,16 +10,16 @@ import { RabbitMQProducerService } from '../rabbitmq/rabbitmq-producer.service';
 import { RabbitMQConsumerService } from '../rabbitmq/rabbitmq-consumer.service';
 
 @Controller('messages')
-export class MessageController implements OnModuleInit {
+export class MessageController {
   constructor(
     private readonly producerService: RabbitMQProducerService,
     private readonly consumerService: RabbitMQConsumerService,
   ) {}
 
-  async onModuleInit() {
-    // Start consuming messages when the module is initialized
-    await this.startConsumers();
-  }
+  // async onModuleInit() {
+  //   // Start consuming messages when the module is initialized
+  //   await this.startConsumers();
+  // }
 
   @Post('send')
   async sendMessage(@Body() body: { queue: string; message: unknown }) {

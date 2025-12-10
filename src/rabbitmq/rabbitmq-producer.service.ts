@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RabbitMQService } from './rabbitmq.service';
+import * as amqp from 'amqplib';
 
 @Injectable()
 export class RabbitMQProducerService {
@@ -9,13 +10,15 @@ export class RabbitMQProducerService {
 
   async publishMessage(queue: string, message: unknown): Promise<boolean> {
     try {
-      const channel = this.rabbitMQService.getChannel();
+      const channelWrapper = this.rabbitMQService.getChannel();
 
-      await channel.assertQueue(queue, {
-        durable: true,
+      await channelWrapper.addSetup(async (channel: amqp.Channel) => {
+        await channel.assertQueue(queue, {
+          durable: true,
+        });
       });
 
-      const sent = await channel.sendToQueue(
+      const sent = await channelWrapper.sendToQueue(
         queue,
         Buffer.from(JSON.stringify(message)),
         {
@@ -43,13 +46,15 @@ export class RabbitMQProducerService {
     exchangeType: string = 'topic',
   ): Promise<boolean> {
     try {
-      const channel = this.rabbitMQService.getChannel();
+      const channelWrapper = this.rabbitMQService.getChannel();
 
-      await channel.assertExchange(exchange, exchangeType, {
-        durable: true,
+      await channelWrapper.addSetup(async (channel: amqp.Channel) => {
+        await channel.assertExchange(exchange, exchangeType, {
+          durable: true,
+        });
       });
 
-      const sent = await channel.publish(
+      const sent = await channelWrapper.publish(
         exchange,
         routingKey,
         Buffer.from(JSON.stringify(message)),
