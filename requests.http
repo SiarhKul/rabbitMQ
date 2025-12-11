@@ -7,6 +7,9 @@ GET http://localhost:3147/health/liveness
 ### Health Check - Readiness Probe
 GET http://localhost:3147/health/readiness
 
+### Start consumer on test-queue
+GET http://localhost:3147/messages/consume/test-queue
+
 ### Send Message to Queue
 POST http://localhost:3147/messages/send
 Content-Type: application/json
@@ -32,3 +35,5 @@ Content-Type: application/json
   },
   "exchangeType": "topic"
 }
+
+

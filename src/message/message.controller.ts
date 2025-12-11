@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { RabbitMQProducerService } from '../rabbitmq/rabbitmq-producer.service';
 import { RabbitMQConsumerService } from '../rabbitmq/rabbitmq-consumer.service';
 
@@ -15,11 +8,6 @@ export class MessageController {
     private readonly producerService: RabbitMQProducerService,
     private readonly consumerService: RabbitMQConsumerService,
   ) {}
-
-  // async onModuleInit() {
-  //   // Start consuming messages when the module is initialized
-  //   await this.startConsumers();
-  // }
 
   @Post('send')
   async sendMessage(@Body() body: { queue: string; message: unknown }) {
@@ -58,29 +46,18 @@ export class MessageController {
 
   @Get('consume/:queue')
   async startConsumingQueue(@Param('queue') queue: string) {
-    await this.consumerService.consumeQueue(queue, (message) => {
-      console.log(`Processing message from ${queue}:`, message);
-      // Add your message processing logic here
-    });
-    return {
-      message: `Started consuming queue: ${queue}`,
-    };
-  }
-
-  private async startConsumers() {
-    // Example: Start consuming from a default queue
-    const defaultQueue = 'test-queue';
-
     await this.consumerService.consumeQueue(
-      defaultQueue,
+      queue,
       (message) => {
-        console.log(`Received message from ${defaultQueue}:`, message);
-        // Add your message processing logic here
+        console.log(`Processing message from ${queue}:`, message);
       },
       {
         durable: true,
         prefetch: 10,
       },
     );
+    return {
+      message: `Started consuming queue: ${queue}`,
+    };
   }
 }
