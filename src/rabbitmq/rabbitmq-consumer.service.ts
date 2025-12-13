@@ -1,16 +1,12 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RabbitMQService } from './rabbitmq.service';
 import * as amqp from 'amqplib';
 
 @Injectable()
-export class RabbitMQConsumerService implements OnModuleInit {
+export class RabbitMQConsumerService {
   private readonly logger = new Logger(RabbitMQConsumerService.name);
 
   constructor(private readonly rabbitMQService: RabbitMQService) {}
-
-  async onModuleInit() {
-    // You can register default consumers here if needed
-  }
 
   async consumeQueue(
     queue: string,
